@@ -6,14 +6,14 @@ SineWave::SineWave()
 	Frequency = 440;
 	Amplitude = 0.5;
 	Phase = 0;
-	Time = 0;
-	TimeStep = 1 / SampleRate;
+	Angle = 0;
+	Step = twopi * Frequency / SampleRate;
 }
 
 void SineWave::SetSampleRate(double value)
 {
 	SampleRate = value;
-	TimeStep = 1 / SampleRate;
+	Step = twopi * Frequency / SampleRate;
 }
 
 void SineWave::SetFrequency(double value)
@@ -27,6 +27,7 @@ void SineWave::SetFrequency(double value)
 	{
 		Frequency = 0;
 	}
+	Step = twopi * Frequency / SampleRate;
 }
 
 void SineWave::SetAmplitude(double value)
@@ -75,15 +76,15 @@ double SineWave::GetPhase()
 	return (Phase * 360) / twopi;
 }
 
-void SineWave::ResetTime()
+void SineWave::ResetAngle()
 {
-	Time = 0;
+	Angle = 0;
 }
 
 double SineWave::Generate()
 {
-	double Waveform = Amplitude * sin(twopi * Frequency * Time + Phase);
-	Time += TimeStep;
+	double Waveform = Amplitude * sin(Angle + Phase);
+	Angle += Step;
 	return Waveform;
 }
 

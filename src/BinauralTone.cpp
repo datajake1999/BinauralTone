@@ -195,8 +195,8 @@ void BinauralTone::setSampleRate (float sampleRate)
 
 void BinauralTone::resume ()
 {
-	SineL.ResetTime();
-	SineR.ResetTime();
+	SineL.ResetAngle();
+	SineR.ResetAngle();
 }
 
 void BinauralTone::processReplacing (float** inputs, float** outputs, VstInt32 sampleFrames)

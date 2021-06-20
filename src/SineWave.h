@@ -14,8 +14,8 @@ private:
 	double Frequency;
 	double Amplitude;
 	double Phase;
-	double Time;
-	double TimeStep;
+	double Angle;
+	double Step;
 public:
 	SineWave();
 	void SetSampleRate(double value);
@@ -26,7 +26,7 @@ public:
 	double GetFrequency();
 	double GetAmplitude();
 	double GetPhase();
-	void ResetTime();
+	void ResetAngle();
 	double Generate();
 };
 
