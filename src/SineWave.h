@@ -13,7 +13,7 @@ private:
 	double SampleRate;
 	double Frequency;
 	double Amplitude;
-	double Phase;
+	double PhaseOffset;
 	double Angle;
 	double Step;
 public:
@@ -21,11 +21,11 @@ public:
 	void SetSampleRate(double value);
 	void SetFrequency(double value);
 	void SetAmplitude(double value);
-	void SetPhase(double value);
+	void SetPhaseOffset(double value);
 	double GetSampleRate();
 	double GetFrequency();
 	double GetAmplitude();
-	double GetPhase();
+	double GetPhaseOffset();
 	void ResetAngle();
 	double Generate();
 };

@@ -22,8 +22,8 @@ void BinauralTone::setParameter (VstInt32 index, float value)
 	case kAmpL:
 		SineL.SetAmplitude(value);
 		break;
-	case kPhaseL:
-		SineL.SetPhase(value*360);
+	case kPhaseOffsL:
+		SineL.SetPhaseOffset(value*360);
 		break;
 	case kFreqR:
 		SineR.SetFrequency(value*1000);
@@ -31,8 +31,8 @@ void BinauralTone::setParameter (VstInt32 index, float value)
 	case kAmpR:
 		SineR.SetAmplitude(value);
 		break;
-	case kPhaseR:
-		SineR.SetPhase(value*360);
+	case kPhaseOffsR:
+		SineR.SetPhaseOffset(value*360);
 		break;
 	}
 }
@@ -48,8 +48,8 @@ float BinauralTone::getParameter (VstInt32 index)
 	case kAmpL:
 		value = SineL.GetAmplitude();
 		break;
-	case kPhaseL:
-		value = SineL.GetPhase()/360;
+	case kPhaseOffsL:
+		value = SineL.GetPhaseOffset()/360;
 		break;
 	case kFreqR:
 		value = SineR.GetFrequency()/1000;
@@ -57,8 +57,8 @@ float BinauralTone::getParameter (VstInt32 index)
 	case kAmpR:
 		value = SineR.GetAmplitude();
 		break;
-	case kPhaseR:
-		value = SineR.GetPhase()/360;
+	case kPhaseOffsR:
+		value = SineR.GetPhaseOffset()/360;
 		break;
 	}
 	return value;
@@ -74,8 +74,8 @@ void BinauralTone::getParameterDisplay (VstInt32 index, char* text)
 	case kAmpL:
 		dB2string (SineL.GetAmplitude(), text, kVstMaxParamStrLen);
 		break;
-	case kPhaseL:
-		float2string (SineL.GetPhase(), text, kVstMaxParamStrLen);
+	case kPhaseOffsL:
+		float2string (SineL.GetPhaseOffset(), text, kVstMaxParamStrLen);
 		break;
 	case kFreqR:
 		float2string (SineR.GetFrequency(), text, kVstMaxParamStrLen);
@@ -83,8 +83,8 @@ void BinauralTone::getParameterDisplay (VstInt32 index, char* text)
 	case kAmpR:
 		dB2string (SineR.GetAmplitude(), text, kVstMaxParamStrLen);
 		break;
-	case kPhaseR:
-		float2string (SineR.GetPhase(), text, kVstMaxParamStrLen);
+	case kPhaseOffsR:
+		float2string (SineR.GetPhaseOffset(), text, kVstMaxParamStrLen);
 		break;
 	}
 }
@@ -99,7 +99,7 @@ void BinauralTone::getParameterLabel (VstInt32 index, char* label)
 	case kAmpL:
 		strcpy (label, "dB");
 		break;
-	case kPhaseL:
+	case kPhaseOffsL:
 		strcpy (label, "Degrees");
 		break;
 	case kFreqR:
@@ -108,7 +108,7 @@ void BinauralTone::getParameterLabel (VstInt32 index, char* label)
 	case kAmpR:
 		strcpy (label, "dB");
 		break;
-	case kPhaseR:
+	case kPhaseOffsR:
 		strcpy (label, "Degrees");
 		break;
 	}
@@ -124,8 +124,8 @@ void BinauralTone::getParameterName (VstInt32 index, char* text)
 	case kAmpL:
 		strcpy (text, "AmpL");
 		break;
-	case kPhaseL:
-		strcpy (text, "PhaseL");
+	case kPhaseOffsL:
+		strcpy (text, "PhaseOffsL");
 		break;
 	case kFreqR:
 		strcpy (text, "FreqR");
@@ -133,8 +133,8 @@ void BinauralTone::getParameterName (VstInt32 index, char* text)
 	case kAmpR:
 		strcpy (text, "AmpR");
 		break;
-	case kPhaseR:
-		strcpy (text, "PhaseR");
+	case kPhaseOffsR:
+		strcpy (text, "PhaseOffsR");
 		break;
 	}
 }

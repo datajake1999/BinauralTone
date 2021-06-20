@@ -12,10 +12,10 @@ enum
 	// Parameters Tags
 	kFreqL = 0,
 	kAmpL,
-	kPhaseL,
+	kPhaseOffsL,
 	kFreqR,
 	kAmpR,
-	kPhaseR,
+	kPhaseOffsR,
 
 	kNumParams
 };
