@@ -42,6 +42,7 @@ public:
 	double GetPhaseOffset();
 	void ResetAngle();
 	double Generate();
+	signed short GenerateShort();
 };
 
 #endif

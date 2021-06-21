@@ -144,3 +144,24 @@ double ToneGenerator::Generate()
 	return Waveform;
 }
 
+signed short ToneGenerator::GenerateShort()
+{
+	double Sample = Generate() * 32768;
+	if (Sample >= 0)
+	{
+		Sample = floor(Sample + 0.5);
+	}
+	else
+	{
+		Sample = ceil(Sample - 0.5);
+	}
+	if (Sample > 32767)
+	{
+		Sample = 32767;
+	}
+	else if (Sample < -32768)
+	{
+		Sample = -32768;
+	}
+	return (signed short)Sample;
+}
