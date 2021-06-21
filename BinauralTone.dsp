@@ -106,7 +106,7 @@ SOURCE=.\src\main.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\SineWave.cpp
+SOURCE=.\src\ToneGenerator.cpp
 # End Source File
 # Begin Source File
 

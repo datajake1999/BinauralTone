@@ -17,22 +17,22 @@ void BinauralTone::setParameter (VstInt32 index, float value)
 	switch(index)
 	{
 	case kFreqL:
-		SineL.SetFrequency(value*1000);
+		ToneL.SetFrequency(value*1000);
 		break;
 	case kAmpL:
-		SineL.SetAmplitude(value);
+		ToneL.SetAmplitude(value);
 		break;
 	case kPhaseOffsL:
-		SineL.SetPhaseOffset(value*360);
+		ToneL.SetPhaseOffset(value*360);
 		break;
 	case kFreqR:
-		SineR.SetFrequency(value*1000);
+		ToneR.SetFrequency(value*1000);
 		break;
 	case kAmpR:
-		SineR.SetAmplitude(value);
+		ToneR.SetAmplitude(value);
 		break;
 	case kPhaseOffsR:
-		SineR.SetPhaseOffset(value*360);
+		ToneR.SetPhaseOffset(value*360);
 		break;
 	}
 }
@@ -43,22 +43,22 @@ float BinauralTone::getParameter (VstInt32 index)
 	switch(index)
 	{
 	case kFreqL:
-		value = SineL.GetFrequency()/1000;
+		value = ToneL.GetFrequency()/1000;
 		break;
 	case kAmpL:
-		value = SineL.GetAmplitude();
+		value = ToneL.GetAmplitude();
 		break;
 	case kPhaseOffsL:
-		value = SineL.GetPhaseOffset()/360;
+		value = ToneL.GetPhaseOffset()/360;
 		break;
 	case kFreqR:
-		value = SineR.GetFrequency()/1000;
+		value = ToneR.GetFrequency()/1000;
 		break;
 	case kAmpR:
-		value = SineR.GetAmplitude();
+		value = ToneR.GetAmplitude();
 		break;
 	case kPhaseOffsR:
-		value = SineR.GetPhaseOffset()/360;
+		value = ToneR.GetPhaseOffset()/360;
 		break;
 	}
 	return value;
@@ -69,22 +69,22 @@ void BinauralTone::getParameterDisplay (VstInt32 index, char* text)
 	switch(index)
 	{
 	case kFreqL:
-		float2string (SineL.GetFrequency(), text, kVstMaxParamStrLen);
+		float2string (ToneL.GetFrequency(), text, kVstMaxParamStrLen);
 		break;
 	case kAmpL:
-		dB2string (SineL.GetAmplitude(), text, kVstMaxParamStrLen);
+		dB2string (ToneL.GetAmplitude(), text, kVstMaxParamStrLen);
 		break;
 	case kPhaseOffsL:
-		float2string (SineL.GetPhaseOffset(), text, kVstMaxParamStrLen);
+		float2string (ToneL.GetPhaseOffset(), text, kVstMaxParamStrLen);
 		break;
 	case kFreqR:
-		float2string (SineR.GetFrequency(), text, kVstMaxParamStrLen);
+		float2string (ToneR.GetFrequency(), text, kVstMaxParamStrLen);
 		break;
 	case kAmpR:
-		dB2string (SineR.GetAmplitude(), text, kVstMaxParamStrLen);
+		dB2string (ToneR.GetAmplitude(), text, kVstMaxParamStrLen);
 		break;
 	case kPhaseOffsR:
-		float2string (SineR.GetPhaseOffset(), text, kVstMaxParamStrLen);
+		float2string (ToneR.GetPhaseOffset(), text, kVstMaxParamStrLen);
 		break;
 	}
 }
@@ -189,14 +189,14 @@ VstPlugCategory BinauralTone::getPlugCategory ()
 
 void BinauralTone::setSampleRate (float sampleRate)
 {
-	SineL.SetSampleRate(sampleRate);
-	SineR.SetSampleRate(sampleRate);
+	ToneL.SetSampleRate(sampleRate);
+	ToneR.SetSampleRate(sampleRate);
 }
 
 void BinauralTone::resume ()
 {
-	SineL.ResetAngle();
-	SineR.ResetAngle();
+	ToneL.ResetAngle();
+	ToneR.ResetAngle();
 }
 
 void BinauralTone::processReplacing (float** inputs, float** outputs, VstInt32 sampleFrames)
@@ -208,8 +208,8 @@ void BinauralTone::processReplacing (float** inputs, float** outputs, VstInt32 s
 	int i;
 	for (i=0; i<sampleFrames; i++)
 	{
-		*out1 = (float)SineL.Generate();
-		*out2 = (float)SineR.Generate();
+		*out1 = (float)ToneL.Generate();
+		*out2 = (float)ToneR.Generate();
 		*in1++;
 		*in2++;
 		*out1++;
@@ -226,8 +226,8 @@ void BinauralTone::processDoubleReplacing (double** inputs, double** outputs, Vs
 	int i;
 	for (i=0; i<sampleFrames; i++)
 	{
-		*out1 = SineL.Generate();
-		*out2 = SineR.Generate();
+		*out1 = ToneL.Generate();
+		*out2 = ToneR.Generate();
 		*in1++;
 		*in2++;
 		*out1++;

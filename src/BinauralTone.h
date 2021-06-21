@@ -1,7 +1,7 @@
 #ifndef BinauralTone_H
 #define BinauralTone_H
 
-#include "SineWave.h"
+#include "ToneGenerator.h"
 #include "public.sdk/source/vst2.x/audioeffectx.h"
 
 enum
@@ -42,8 +42,8 @@ public:
 	virtual void processReplacing (float** inputs, float** outputs, VstInt32 sampleFrames);
 	virtual void processDoubleReplacing (double** inputs, double** outputs, VstInt32 sampleFrames);
 private:
-	SineWave SineL;
-	SineWave SineR;
+	ToneGenerator ToneL;
+	ToneGenerator ToneR;
 	char ProgramName[32];
 };
 
