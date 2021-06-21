@@ -123,7 +123,7 @@ double ToneGenerator::Generate()
 		Waveform = 2.0 * (Angle + PhaseOffset) / M_PI - 1.0;
 		if (Waveform > 1.0)
 		{
-			Waveform = 2.0-Waveform;
+			Waveform = 2.0 - Waveform;
 		}
 		break;
 	case Sawtooth:
