@@ -10,12 +10,12 @@ const double twopi = 2 * M_PI;
 
 enum
 {
-	Sine = 0,
+	Sine = 1,
 	Square,
 	Triangle,
 	Sawtooth,
 	Noise,
-	Silent
+	Silence
 };
 
 class ToneGenerator
