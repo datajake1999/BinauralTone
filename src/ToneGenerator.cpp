@@ -120,14 +120,14 @@ double ToneGenerator::Generate()
 		}
 		break;
 	case Triangle:
-		Waveform = 2.0 * (Angle + PhaseOffset) / M_PI - 1.0;
+		Waveform = 2.0 * Angle / M_PI - 1.0;
 		if (Waveform > 1.0)
 		{
 			Waveform = 2.0 - Waveform;
 		}
 		break;
 	case Sawtooth:
-		Waveform = 1.0 - (Angle + PhaseOffset) / M_PI;
+		Waveform = 1.0 - Angle / M_PI;
 		break;
 	case Noise:
 		Waveform = rand() / (double)RAND_MAX;
