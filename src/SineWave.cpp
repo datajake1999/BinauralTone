@@ -85,6 +85,10 @@ double SineWave::Generate()
 {
 	double Waveform = Amplitude * sin(Angle + PhaseOffset);
 	Angle += Step;
+	if (Angle >= twopi)
+	{
+		Angle -= twopi;
+	}
 	return Waveform;
 }
 
