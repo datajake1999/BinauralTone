@@ -13,9 +13,11 @@ enum
 	kFreqL = 0,
 	kAmpL,
 	kPhaseOffsL,
+	kWaveL,
 	kFreqR,
 	kAmpR,
 	kPhaseOffsR,
+	kWaveR,
 
 	kNumParams
 };

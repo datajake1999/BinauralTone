@@ -25,6 +25,9 @@ void BinauralTone::setParameter (VstInt32 index, float value)
 	case kPhaseOffsL:
 		ToneL.SetPhaseOffset(value*360);
 		break;
+	case kWaveL:
+		ToneL.SetWaveType(value*4);
+		break;
 	case kFreqR:
 		ToneR.SetFrequency(value*1000);
 		break;
@@ -33,6 +36,9 @@ void BinauralTone::setParameter (VstInt32 index, float value)
 		break;
 	case kPhaseOffsR:
 		ToneR.SetPhaseOffset(value*360);
+		break;
+	case kWaveR:
+		ToneR.SetWaveType(value*4);
 		break;
 	}
 }
@@ -51,6 +57,9 @@ float BinauralTone::getParameter (VstInt32 index)
 	case kPhaseOffsL:
 		value = ToneL.GetPhaseOffset()/360;
 		break;
+	case kWaveL:
+		value = (float)ToneL.GetWaveType()/4;
+		break;
 	case kFreqR:
 		value = ToneR.GetFrequency()/1000;
 		break;
@@ -59,6 +68,9 @@ float BinauralTone::getParameter (VstInt32 index)
 		break;
 	case kPhaseOffsR:
 		value = ToneR.GetPhaseOffset()/360;
+		break;
+	case kWaveR:
+		value = (float)ToneR.GetWaveType()/4;
 		break;
 	}
 	return value;
@@ -77,6 +89,32 @@ void BinauralTone::getParameterDisplay (VstInt32 index, char* text)
 	case kPhaseOffsL:
 		float2string (ToneL.GetPhaseOffset(), text, kVstMaxParamStrLen);
 		break;
+	case kWaveL:
+		if (ToneL.GetWaveType() == Sine)
+		{
+			strcpy (text, "Sine");
+		}
+		else if (ToneL.GetWaveType() == Square)
+		{
+			strcpy (text, "Square");
+		}
+		else if (ToneL.GetWaveType() == Triangle)
+		{
+			strcpy (text, "Triangle");
+		}
+		else if (ToneL.GetWaveType() == Sawtooth)
+		{
+			strcpy (text, "Sawtooth");
+		}
+		else if (ToneL.GetWaveType() == Noise)
+		{
+			strcpy (text, "Noise");
+		}
+		else if (ToneL.GetWaveType() == Silence)
+		{
+			strcpy (text, "Silence");
+		}
+		break;
 	case kFreqR:
 		float2string (ToneR.GetFrequency(), text, kVstMaxParamStrLen);
 		break;
@@ -85,6 +123,32 @@ void BinauralTone::getParameterDisplay (VstInt32 index, char* text)
 		break;
 	case kPhaseOffsR:
 		float2string (ToneR.GetPhaseOffset(), text, kVstMaxParamStrLen);
+		break;
+	case kWaveR:
+		if (ToneR.GetWaveType() == Sine)
+		{
+			strcpy (text, "Sine");
+		}
+		else if (ToneR.GetWaveType() == Square)
+		{
+			strcpy (text, "Square");
+		}
+		else if (ToneR.GetWaveType() == Triangle)
+		{
+			strcpy (text, "Triangle");
+		}
+		else if (ToneR.GetWaveType() == Sawtooth)
+		{
+			strcpy (text, "Sawtooth");
+		}
+		else if (ToneR.GetWaveType() == Noise)
+		{
+			strcpy (text, "Noise");
+		}
+		else if (ToneR.GetWaveType() == Silence)
+		{
+			strcpy (text, "Silence");
+		}
 		break;
 	}
 }
@@ -127,6 +191,9 @@ void BinauralTone::getParameterName (VstInt32 index, char* text)
 	case kPhaseOffsL:
 		strcpy (text, "PhaseOffsL");
 		break;
+	case kWaveL:
+		strcpy (text, "WaveL");
+		break;
 	case kFreqR:
 		strcpy (text, "FreqR");
 		break;
@@ -135,6 +202,9 @@ void BinauralTone::getParameterName (VstInt32 index, char* text)
 		break;
 	case kPhaseOffsR:
 		strcpy (text, "PhaseOffsR");
+		break;
+	case kWaveR:
+		strcpy (text, "WaveR");
 		break;
 	}
 }
