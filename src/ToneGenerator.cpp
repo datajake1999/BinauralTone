@@ -127,7 +127,7 @@ double ToneGenerator::Generate()
 		}
 		break;
 	case Sawtooth:
-		Waveform = 1.0 - Angle / M_PI;
+		Waveform = Angle / M_PI - 1.0;
 		break;
 	case Noise:
 		Waveform = rand() / (double)RAND_MAX;
