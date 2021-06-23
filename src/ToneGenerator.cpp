@@ -109,14 +109,13 @@ double ToneGenerator::Generate()
 		Waveform = sin(Angle + PhaseOffset);
 		break;
 	case Square:
-		Waveform = sin(Angle + PhaseOffset);
-		if (Waveform >= 0)
+		if (Angle >= M_PI)
 		{
-			Waveform = 1;
+			Waveform = -1;
 		}
 		else
 		{
-			Waveform = -1;
+			Waveform = 1;
 		}
 		break;
 	case Triangle:
