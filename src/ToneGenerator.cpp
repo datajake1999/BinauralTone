@@ -14,13 +14,13 @@ ToneGenerator::ToneGenerator()
 void ToneGenerator::SetWaveType(unsigned int value)
 {
 	WaveType = value;
-	if (WaveType > Silence)
+	if (WaveType > Noise)
+	{
+		WaveType = Noise;
+	}
+	else if (WaveType < Silence)
 	{
 		WaveType = Silence;
-	}
-	else if (WaveType < Sine)
-	{
-		WaveType = Sine;
 	}
 }
 
@@ -105,6 +105,8 @@ double ToneGenerator::Generate()
 	double Waveform = 0;
 	switch(WaveType)
 	{
+	case Silence:
+		break;
 	case Sine:
 		Waveform = sin(Angle + PhaseOffset);
 		break;
@@ -130,8 +132,6 @@ double ToneGenerator::Generate()
 		break;
 	case Noise:
 		Waveform = rand() / (double)RAND_MAX;
-		break;
-	case Silence:
 		break;
 	}
 	Waveform = Amplitude * Waveform;

@@ -90,7 +90,11 @@ void BinauralTone::getParameterDisplay (VstInt32 index, char* text)
 		float2string (ToneL.GetPhaseOffset(), text, kVstMaxParamStrLen);
 		break;
 	case kWaveL:
-		if (ToneL.GetWaveType() == Sine)
+		if (ToneL.GetWaveType() == Silence)
+		{
+			strcpy (text, "Silence");
+		}
+		else if (ToneL.GetWaveType() == Sine)
 		{
 			strcpy (text, "Sine");
 		}
@@ -110,10 +114,6 @@ void BinauralTone::getParameterDisplay (VstInt32 index, char* text)
 		{
 			strcpy (text, "Noise");
 		}
-		else if (ToneL.GetWaveType() == Silence)
-		{
-			strcpy (text, "Silence");
-		}
 		break;
 	case kFreqR:
 		float2string (ToneR.GetFrequency(), text, kVstMaxParamStrLen);
@@ -125,7 +125,11 @@ void BinauralTone::getParameterDisplay (VstInt32 index, char* text)
 		float2string (ToneR.GetPhaseOffset(), text, kVstMaxParamStrLen);
 		break;
 	case kWaveR:
-		if (ToneR.GetWaveType() == Sine)
+		if (ToneR.GetWaveType() == Silence)
+		{
+			strcpy (text, "Silence");
+		}
+		else if (ToneR.GetWaveType() == Sine)
 		{
 			strcpy (text, "Sine");
 		}
@@ -144,10 +148,6 @@ void BinauralTone::getParameterDisplay (VstInt32 index, char* text)
 		else if (ToneR.GetWaveType() == Noise)
 		{
 			strcpy (text, "Noise");
-		}
-		else if (ToneR.GetWaveType() == Silence)
-		{
-			strcpy (text, "Silence");
 		}
 		break;
 	}
