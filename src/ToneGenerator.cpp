@@ -134,13 +134,12 @@ double ToneGenerator::Generate()
 		Waveform = rand() / (double)RAND_MAX;
 		break;
 	}
-	Waveform = Amplitude * Waveform;
 	Angle += Step;
 	if (Angle >= twopi)
 	{
 		Angle -= twopi;
 	}
-	return Waveform;
+	return Amplitude * Waveform;
 }
 
 signed short ToneGenerator::GenerateShort()
