@@ -9,6 +9,22 @@ ToneGenerator::ToneGenerator()
 	PhaseOffset = 0;
 	Angle = 0;
 	Step = twopi * Frequency / SampleRate;
+	LookupTable = NULL;
+	LookupWaveType = 0;
+	LookupSampleRate = 0;
+	LookupFrequency = 0;
+	LookupAmplitude = 0;
+	LookupPhaseOffset = 0;
+	LookupSize = 0;
+	LookupPosition = 0;
+}
+
+ToneGenerator::~ToneGenerator()
+{
+	if (LookupTable)
+	{
+		free(LookupTable);
+	}
 }
 
 void ToneGenerator::SetWaveType(unsigned int value)
@@ -162,4 +178,104 @@ signed short ToneGenerator::GenerateShort()
 		Sample = -32768;
 	}
 	return (signed short)Sample;
+}
+
+void ToneGenerator::CalculateLookup()
+{
+	if (WaveType == LookupWaveType && SampleRate == LookupSampleRate && Frequency == LookupFrequency && Amplitude == LookupAmplitude && PhaseOffset == LookupPhaseOffset)
+	{
+		return;
+	}
+	if (LookupTable)
+	{
+		free(LookupTable);
+		LookupTable = NULL;
+	}
+	LookupWaveType = WaveType;
+	LookupSampleRate = SampleRate;
+	LookupFrequency = Frequency;
+	LookupAmplitude = Amplitude;
+	LookupPhaseOffset = PhaseOffset;
+	LookupSize = (unsigned int)floor((LookupSampleRate/LookupFrequency)+0.5);
+	if (LookupSize < 2)
+	{
+		LookupSize = 2;
+	}
+	LookupTable = (signed short*)malloc(LookupSize*2);
+	if (!LookupTable)
+	{
+		return;
+	}
+	for (unsigned int i = 0; i < LookupSize; i++)
+	{
+		LookupTable[i] = GenerateShort();
+	}
+	LookupPosition = 0;
+}
+
+void ToneGenerator::ClearLookup()
+{
+	if (LookupTable)
+	{
+		free(LookupTable);
+		LookupTable = NULL;
+	}
+	LookupWaveType = 0;
+	LookupSampleRate = 0;
+	LookupFrequency = 0;
+	LookupAmplitude = 0;
+	LookupPhaseOffset = 0;
+	LookupSize = 0;
+	LookupPosition = 0;
+}
+
+signed short ToneGenerator::GenerateLookup()
+{
+	if (!LookupTable)
+	{
+		return 0;
+	}
+	signed short Sample = LookupTable[LookupPosition];
+	LookupPosition++;
+	if (LookupPosition >= LookupSize)
+	{
+		LookupPosition -= LookupSize;
+	}
+	return Sample;
+}
+
+unsigned int ToneGenerator::Millis2Samples(unsigned int Millis)
+{
+	return (unsigned int)floor((Millis/1000.0)*SampleRate);
+}
+
+void ToneGenerator::FillBuffer(signed short *buffer, unsigned int length, bool lookup)
+{
+	if (!buffer)
+	{
+		return;
+	}
+	for (unsigned int i = 0; i < length; i++)
+	{
+		if (lookup == true)
+		{
+			buffer[i] = GenerateLookup();
+		}
+		else
+		{
+			buffer[i] = GenerateShort();
+		}
+	}
+}
+
+void ToneGenerator::FillFloatBuffer(float *buffer, unsigned int length)
+{
+	if (!buffer)
+	{
+		return;
+	}
+	for (unsigned int i = 0; i < length; i++)
+	{
+		buffer[i] = (float)Generate();
+	}
 }

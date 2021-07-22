@@ -28,8 +28,17 @@ private:
 	double PhaseOffset;
 	double Angle;
 	double Step;
+	signed short *LookupTable;
+	unsigned int LookupWaveType;
+	double LookupSampleRate;
+	double LookupFrequency;
+	double LookupAmplitude;
+	double LookupPhaseOffset;
+	unsigned int LookupSize;
+	unsigned int LookupPosition;
 public:
 	ToneGenerator();
+	~ToneGenerator();
 	void SetWaveType(unsigned int value);
 	void SetSampleRate(double value);
 	void SetFrequency(double value);
@@ -43,6 +52,12 @@ public:
 	void ResetAngle();
 	double Generate();
 	signed short GenerateShort();
+	void CalculateLookup();
+	void ClearLookup();
+	signed short GenerateLookup();
+	unsigned int Millis2Samples(unsigned int Millis);
+	void FillBuffer(signed short *buffer, unsigned int length, bool lookup);
+	void FillFloatBuffer(float *buffer, unsigned int length);
 };
 
 #endif
