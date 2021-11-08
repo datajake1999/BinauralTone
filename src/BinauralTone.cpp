@@ -10,6 +10,8 @@ BinauralTone::BinauralTone (audioMasterCallback audioMaster)
 	strcpy (ProgramName, "Default");
 	canProcessReplacing ();
 	canDoubleReplacing ();
+	ToneGeneratorInit(&ToneL);
+	ToneGeneratorInit(&ToneR);
 }
 
 void BinauralTone::setParameter (VstInt32 index, float value)
@@ -17,28 +19,28 @@ void BinauralTone::setParameter (VstInt32 index, float value)
 	switch(index)
 	{
 	case kFreqL:
-		ToneL.SetFrequency(value*1000);
+		ToneGeneratorSetFrequency(&ToneL, value*1000);
 		break;
 	case kAmpL:
-		ToneL.SetAmplitude(value);
+		ToneGeneratorSetAmplitude(&ToneL, value);
 		break;
 	case kPhaseOffsL:
-		ToneL.SetPhaseOffset(value*360);
+		ToneGeneratorSetPhaseOffset(&ToneL, value*360);
 		break;
 	case kWaveL:
-		ToneL.SetWaveType(value*4);
+		ToneGeneratorSetWaveType(&ToneL, value*(WaveTypes-1));
 		break;
 	case kFreqR:
-		ToneR.SetFrequency(value*1000);
+		ToneGeneratorSetFrequency(&ToneR, value*1000);
 		break;
 	case kAmpR:
-		ToneR.SetAmplitude(value);
+		ToneGeneratorSetAmplitude(&ToneR, value);
 		break;
 	case kPhaseOffsR:
-		ToneR.SetPhaseOffset(value*360);
+		ToneGeneratorSetPhaseOffset(&ToneR, value*360);
 		break;
 	case kWaveR:
-		ToneR.SetWaveType(value*4);
+		ToneGeneratorSetWaveType(&ToneR, value*(WaveTypes-1));
 		break;
 	}
 }
@@ -49,28 +51,28 @@ float BinauralTone::getParameter (VstInt32 index)
 	switch(index)
 	{
 	case kFreqL:
-		value = ToneL.GetFrequency()/1000;
+		value = ToneGeneratorGetFrequency(&ToneL)/1000;
 		break;
 	case kAmpL:
-		value = ToneL.GetAmplitude();
+		value = ToneGeneratorGetAmplitude(&ToneL);
 		break;
 	case kPhaseOffsL:
-		value = ToneL.GetPhaseOffset()/360;
+		value = ToneGeneratorGetPhaseOffset(&ToneL)/360;
 		break;
 	case kWaveL:
-		value = (float)ToneL.GetWaveType()/4;
+		value = (float)ToneGeneratorGetWaveType(&ToneL)/(WaveTypes-1);
 		break;
 	case kFreqR:
-		value = ToneR.GetFrequency()/1000;
+		value = ToneGeneratorGetFrequency(&ToneR)/1000;
 		break;
 	case kAmpR:
-		value = ToneR.GetAmplitude();
+		value = ToneGeneratorGetAmplitude(&ToneR);
 		break;
 	case kPhaseOffsR:
-		value = ToneR.GetPhaseOffset()/360;
+		value = ToneGeneratorGetPhaseOffset(&ToneR)/360;
 		break;
 	case kWaveR:
-		value = (float)ToneR.GetWaveType()/4;
+		value = (float)ToneGeneratorGetWaveType(&ToneR)/(WaveTypes-1);
 		break;
 	}
 	return value;
@@ -81,74 +83,28 @@ void BinauralTone::getParameterDisplay (VstInt32 index, char* text)
 	switch(index)
 	{
 	case kFreqL:
-		float2string (ToneL.GetFrequency(), text, kVstMaxParamStrLen);
+		float2string (ToneGeneratorGetFrequency(&ToneL), text, kVstMaxParamStrLen);
 		break;
 	case kAmpL:
-		dB2string (ToneL.GetAmplitude(), text, kVstMaxParamStrLen);
+		dB2string (ToneGeneratorGetAmplitude(&ToneL), text, kVstMaxParamStrLen);
 		break;
 	case kPhaseOffsL:
-		float2string (ToneL.GetPhaseOffset(), text, kVstMaxParamStrLen);
+		float2string (ToneGeneratorGetPhaseOffset(&ToneL), text, kVstMaxParamStrLen);
 		break;
 	case kWaveL:
-		if (ToneL.GetWaveType() == Silence)
-		{
-			strcpy (text, "Silence");
-		}
-		else if (ToneL.GetWaveType() == Sine)
-		{
-			strcpy (text, "Sine");
-		}
-		else if (ToneL.GetWaveType() == Square)
-		{
-			strcpy (text, "Square");
-		}
-		else if (ToneL.GetWaveType() == Triangle)
-		{
-			strcpy (text, "Triangle");
-		}
-		else if (ToneL.GetWaveType() == Sawtooth)
-		{
-			strcpy (text, "Sawtooth");
-		}
-		else if (ToneL.GetWaveType() == Noise)
-		{
-			strcpy (text, "Noise");
-		}
+		strcpy (text, ToneGeneratorGetCurrentWaveName(&ToneL));
 		break;
 	case kFreqR:
-		float2string (ToneR.GetFrequency(), text, kVstMaxParamStrLen);
+		float2string (ToneGeneratorGetFrequency(&ToneR), text, kVstMaxParamStrLen);
 		break;
 	case kAmpR:
-		dB2string (ToneR.GetAmplitude(), text, kVstMaxParamStrLen);
+		dB2string (ToneGeneratorGetAmplitude(&ToneR), text, kVstMaxParamStrLen);
 		break;
 	case kPhaseOffsR:
-		float2string (ToneR.GetPhaseOffset(), text, kVstMaxParamStrLen);
+		float2string (ToneGeneratorGetPhaseOffset(&ToneR), text, kVstMaxParamStrLen);
 		break;
 	case kWaveR:
-		if (ToneR.GetWaveType() == Silence)
-		{
-			strcpy (text, "Silence");
-		}
-		else if (ToneR.GetWaveType() == Sine)
-		{
-			strcpy (text, "Sine");
-		}
-		else if (ToneR.GetWaveType() == Square)
-		{
-			strcpy (text, "Square");
-		}
-		else if (ToneR.GetWaveType() == Triangle)
-		{
-			strcpy (text, "Triangle");
-		}
-		else if (ToneR.GetWaveType() == Sawtooth)
-		{
-			strcpy (text, "Sawtooth");
-		}
-		else if (ToneR.GetWaveType() == Noise)
-		{
-			strcpy (text, "Noise");
-		}
+		strcpy (text, ToneGeneratorGetCurrentWaveName(&ToneR));
 		break;
 	}
 }
@@ -259,14 +215,14 @@ VstPlugCategory BinauralTone::getPlugCategory ()
 
 void BinauralTone::setSampleRate (float sampleRate)
 {
-	ToneL.SetSampleRate(sampleRate);
-	ToneR.SetSampleRate(sampleRate);
+	ToneGeneratorSetSampleRate(&ToneL, sampleRate);
+	ToneGeneratorSetSampleRate(&ToneR, sampleRate);
 }
 
 void BinauralTone::resume ()
 {
-	ToneL.ResetAngle();
-	ToneR.ResetAngle();
+	ToneGeneratorResetAngle(&ToneL);
+	ToneGeneratorResetAngle(&ToneR);
 }
 
 void BinauralTone::processReplacing (float** inputs, float** outputs, VstInt32 sampleFrames)
@@ -278,12 +234,8 @@ void BinauralTone::processReplacing (float** inputs, float** outputs, VstInt32 s
 	int i;
 	for (i=0; i<sampleFrames; i++)
 	{
-		*out1 = (float)ToneL.Generate();
-		*out2 = (float)ToneR.Generate();
-		*in1++;
-		*in2++;
-		*out1++;
-		*out2++;
+		out1[i] = (float)ToneGeneratorGenerate(&ToneL);
+		out2[i] = (float)ToneGeneratorGenerate(&ToneR);
 	}
 }
 
@@ -296,11 +248,7 @@ void BinauralTone::processDoubleReplacing (double** inputs, double** outputs, Vs
 	int i;
 	for (i=0; i<sampleFrames; i++)
 	{
-		*out1 = ToneL.Generate();
-		*out2 = ToneR.Generate();
-		*in1++;
-		*in2++;
-		*out1++;
-		*out2++;
+		out1[i] = ToneGeneratorGenerate(&ToneL);
+		out2[i] = ToneGeneratorGenerate(&ToneR);
 	}
 }

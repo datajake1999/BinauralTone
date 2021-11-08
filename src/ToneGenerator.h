@@ -1,63 +1,66 @@
 #ifndef TONEGENERATOR_H
 #define TONEGENERATOR_H
 
-#include <stdlib.h>
-#include <math.h>
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
-const double twopi = 2 * M_PI;
-
 enum
 {
-	Silence = 0,
-	Sine,
-	Square,
-	Triangle,
-	Sawtooth,
-	Noise
+	WaveTypeSilence = 0,
+	WaveTypeSine,
+	WaveTypeSquare,
+	WaveTypeTriangle,
+	WaveTypeSawtooth,
+	WaveTypeNoise,
+	WaveTypes
 };
 
-class ToneGenerator
-{
-private:
-	unsigned int WaveType;
-	double SampleRate;
-	double Frequency;
-	double Amplitude;
-	double PhaseOffset;
-	double Angle;
-	double Step;
-	signed short *LookupTable;
-	unsigned int LookupWaveType;
-	double LookupSampleRate;
-	double LookupFrequency;
-	double LookupAmplitude;
-	double LookupPhaseOffset;
-	unsigned int LookupSize;
-	unsigned int LookupPosition;
-public:
-	ToneGenerator();
-	~ToneGenerator();
-	void SetWaveType(unsigned int value);
-	void SetSampleRate(double value);
-	void SetFrequency(double value);
-	void SetAmplitude(double value);
-	void SetPhaseOffset(double value);
-	unsigned int GetWaveType();
-	double GetSampleRate();
-	double GetFrequency();
-	double GetAmplitude();
-	double GetPhaseOffset();
-	void ResetAngle();
-	double Generate();
-	signed short GenerateShort();
-	void CalculateLookup();
-	void ClearLookup();
-	signed short GenerateLookup();
-	unsigned int Millis2Samples(unsigned int Millis);
-	void FillBuffer(signed short *buffer, unsigned int length, bool lookup);
-	void FillFloatBuffer(float *buffer, unsigned int length);
-};
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+	typedef struct
+	{
+		unsigned int WaveType;
+		double SampleRate;
+		double Frequency;
+		double Amplitude;
+		double PhaseOffset;
+		double Angle;
+		double Step;
+		signed short *LookupTable;
+		unsigned int LookupWaveType;
+		double LookupSampleRate;
+		double LookupFrequency;
+		double LookupAmplitude;
+		double LookupPhaseOffset;
+		unsigned int LookupSize;
+		unsigned int LookupPosition;
+	}ToneGenerator;
+
+	void ToneGeneratorInit(ToneGenerator *tg);
+	void ToneGeneratorFree(ToneGenerator *tg);
+	void ToneGeneratorReset(ToneGenerator *tg);
+	void ToneGeneratorSetWaveType(ToneGenerator *tg, unsigned int value);
+	void ToneGeneratorSetSampleRate(ToneGenerator *tg, double value);
+	void ToneGeneratorSetFrequency(ToneGenerator *tg, double value);
+	void ToneGeneratorSetAmplitude(ToneGenerator *tg, double value);
+	void ToneGeneratorSetPhaseOffset(ToneGenerator *tg, double value);
+	unsigned int ToneGeneratorGetWaveType(ToneGenerator *tg);
+	double ToneGeneratorGetSampleRate(ToneGenerator *tg);
+	double ToneGeneratorGetFrequency(ToneGenerator *tg);
+	double ToneGeneratorGetAmplitude(ToneGenerator *tg);
+	double ToneGeneratorGetPhaseOffset(ToneGenerator *tg);
+	void ToneGeneratorResetAngle(ToneGenerator *tg);
+	const char *ToneGeneratorGetCurrentWaveName(ToneGenerator *tg);
+	double ToneGeneratorGenerate(ToneGenerator *tg);
+	signed short ToneGeneratorGenerateShort(ToneGenerator *tg);
+	void ToneGeneratorCalculateLookup(ToneGenerator *tg);
+	void ToneGeneratorClearLookup(ToneGenerator *tg);
+	signed short ToneGeneratorGenerateLookup(ToneGenerator *tg);
+	unsigned int ToneGeneratorMillis2Samples(ToneGenerator *tg, unsigned int Millis);
+	void ToneGeneratorFillBuffer(ToneGenerator *tg, signed short *buffer, unsigned int length, unsigned int lookup);
+	void ToneGeneratorFillFloatBuffer(ToneGenerator *tg, float *buffer, unsigned int length);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -1,133 +1,160 @@
+#include <stdlib.h>
+#include <math.h>
+#include <string.h>
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+const double twopi = 2 * M_PI;
 #include "ToneGenerator.h"
 
-ToneGenerator::ToneGenerator()
+void ToneGeneratorInit(ToneGenerator *tg)
 {
-	WaveType = Sine;
-	SampleRate = 44100;
-	Frequency = 440;
-	Amplitude = 0.5;
-	PhaseOffset = 0;
-	Angle = 0;
-	Step = twopi * Frequency / SampleRate;
-	LookupTable = NULL;
-	LookupWaveType = 0;
-	LookupSampleRate = 0;
-	LookupFrequency = 0;
-	LookupAmplitude = 0;
-	LookupPhaseOffset = 0;
-	LookupSize = 0;
-	LookupPosition = 0;
+	tg->WaveType = WaveTypeSine;
+	tg->SampleRate = 44100;
+	tg->Frequency = 440;
+	tg->Amplitude = 0.5;
+	tg->PhaseOffset = 0;
+	tg->Angle = 0;
+	tg->Step = twopi * tg->Frequency / tg->SampleRate;
+	tg->LookupTable = NULL;
+	tg->LookupWaveType = 0;
+	tg->LookupSampleRate = 0;
+	tg->LookupFrequency = 0;
+	tg->LookupAmplitude = 0;
+	tg->LookupPhaseOffset = 0;
+	tg->LookupSize = 0;
+	tg->LookupPosition = 0;
 }
 
-ToneGenerator::~ToneGenerator()
+void ToneGeneratorFree(ToneGenerator *tg)
 {
-	if (LookupTable)
+	if (tg->LookupTable)
 	{
-		free(LookupTable);
+		free(tg->LookupTable);
+	}
+	memset(tg, 0, sizeof(tg));
+}
+
+void ToneGeneratorReset(ToneGenerator *tg)
+{
+	ToneGeneratorFree(tg);
+	ToneGeneratorInit(tg);
+}
+
+void ToneGeneratorSetWaveType(ToneGenerator *tg, unsigned int value)
+{
+	tg->WaveType = value%WaveTypes;
+}
+
+void ToneGeneratorSetSampleRate(ToneGenerator *tg, double value)
+{
+	tg->SampleRate = value;
+	tg->Step = twopi * tg->Frequency / tg->SampleRate;
+}
+
+void ToneGeneratorSetFrequency(ToneGenerator *tg, double value)
+{
+	tg->Frequency = value;
+	if (tg->Frequency > tg->SampleRate / 2)
+	{
+		tg->Frequency = tg->SampleRate / 2;
+	}
+	else if (tg->Frequency < 0)
+	{
+		tg->Frequency = 0;
+	}
+	tg->Step = twopi * tg->Frequency / tg->SampleRate;
+}
+
+void ToneGeneratorSetAmplitude(ToneGenerator *tg, double value)
+{
+	tg->Amplitude = value;
+	if (tg->Amplitude > 1)
+	{
+		tg->Amplitude = 1;
+	}
+	else if (tg->Amplitude < 0)
+	{
+		tg->Amplitude = 0;
 	}
 }
 
-void ToneGenerator::SetWaveType(unsigned int value)
+void ToneGeneratorSetPhaseOffset(ToneGenerator *tg, double value)
 {
-	WaveType = value;
-	if (WaveType > Noise)
+	tg->PhaseOffset = value * (twopi / 360);
+	if (tg->PhaseOffset > twopi)
 	{
-		WaveType = Noise;
+		tg->PhaseOffset = twopi;
 	}
-	else if (WaveType < Silence)
+	else if (tg->PhaseOffset < 0)
 	{
-		WaveType = Silence;
-	}
-}
-
-void ToneGenerator::SetSampleRate(double value)
-{
-	SampleRate = value;
-	Step = twopi * Frequency / SampleRate;
-}
-
-void ToneGenerator::SetFrequency(double value)
-{
-	Frequency = value;
-	if (Frequency > SampleRate / 2)
-	{
-		Frequency = SampleRate / 2;
-	}
-	else if (Frequency < 0)
-	{
-		Frequency = 0;
-	}
-	Step = twopi * Frequency / SampleRate;
-}
-
-void ToneGenerator::SetAmplitude(double value)
-{
-	Amplitude = value;
-	if (Amplitude > 1)
-	{
-		Amplitude = 1;
-	}
-	else if (Amplitude < 0)
-	{
-		Amplitude = 0;
+		tg->PhaseOffset = 0;
 	}
 }
 
-void ToneGenerator::SetPhaseOffset(double value)
+unsigned int ToneGeneratorGetWaveType(ToneGenerator *tg)
 {
-	PhaseOffset = value * (twopi / 360);
-	if (PhaseOffset > twopi)
+	return tg->WaveType;
+}
+
+double ToneGeneratorGetSampleRate(ToneGenerator *tg)
+{
+	return tg->SampleRate;
+}
+
+double ToneGeneratorGetFrequency(ToneGenerator *tg)
+{
+	return tg->Frequency;
+}
+
+double ToneGeneratorGetAmplitude(ToneGenerator *tg)
+{
+	return tg->Amplitude;
+}
+
+double ToneGeneratorGetPhaseOffset(ToneGenerator *tg)
+{
+	return (tg->PhaseOffset * 360) / twopi;
+}
+
+void ToneGeneratorResetAngle(ToneGenerator *tg)
+{
+	tg->Angle = 0;
+}
+
+const char *ToneGeneratorGetCurrentWaveName(ToneGenerator *tg)
+{
+	switch(tg->WaveType)
 	{
-		PhaseOffset = twopi;
+	case WaveTypeSilence:
+		return "Silence";
+	case WaveTypeSine:
+		return "Sine";
+	case WaveTypeSquare:
+		return "Square";
+	case WaveTypeTriangle:
+		return "Triangle";
+	case WaveTypeSawtooth:
+		return "Sawtooth";
+	case WaveTypeNoise:
+		return "Noise";
+	default:
+		return NULL;
 	}
-	else if (PhaseOffset < 0)
-	{
-		PhaseOffset = 0;
-	}
 }
 
-unsigned int ToneGenerator::GetWaveType()
-{
-	return WaveType;
-}
-
-double ToneGenerator::GetSampleRate()
-{
-	return SampleRate;
-}
-
-double ToneGenerator::GetFrequency()
-{
-	return Frequency;
-}
-
-double ToneGenerator::GetAmplitude()
-{
-	return Amplitude;
-}
-
-double ToneGenerator::GetPhaseOffset()
-{
-	return (PhaseOffset * 360) / twopi;
-}
-
-void ToneGenerator::ResetAngle()
-{
-	Angle = 0;
-}
-
-double ToneGenerator::Generate()
+double ToneGeneratorGenerate(ToneGenerator *tg)
 {
 	double Waveform = 0;
-	switch(WaveType)
+	switch(tg->WaveType)
 	{
-	case Silence:
+	case WaveTypeSilence:
 		break;
-	case Sine:
-		Waveform = sin(Angle + PhaseOffset);
+	case WaveTypeSine:
+		Waveform = sin(tg->Angle + tg->PhaseOffset);
 		break;
-	case Square:
-		if (Angle >= M_PI)
+	case WaveTypeSquare:
+		if (tg->Angle >= M_PI)
 		{
 			Waveform = -1;
 		}
@@ -136,31 +163,31 @@ double ToneGenerator::Generate()
 			Waveform = 1;
 		}
 		break;
-	case Triangle:
-		Waveform = 2.0 * Angle / M_PI - 1.0;
+	case WaveTypeTriangle:
+		Waveform = 2.0 * tg->Angle / M_PI - 1.0;
 		if (Waveform > 1.0)
 		{
 			Waveform = 2.0 - Waveform;
 		}
 		break;
-	case Sawtooth:
-		Waveform = Angle / M_PI - 1.0;
+	case WaveTypeSawtooth:
+		Waveform = tg->Angle / M_PI - 1.0;
 		break;
-	case Noise:
+	case WaveTypeNoise:
 		Waveform = rand() / (double)RAND_MAX;
 		break;
 	}
-	Angle += Step;
-	if (Angle >= twopi)
+	tg->Angle += tg->Step;
+	if (tg->Angle >= twopi)
 	{
-		Angle -= twopi;
+		tg->Angle -= twopi;
 	}
-	return Amplitude * Waveform;
+	return tg->Amplitude * Waveform;
 }
 
-signed short ToneGenerator::GenerateShort()
+signed short ToneGeneratorGenerateShort(ToneGenerator *tg)
 {
-	double Sample = Generate() * 32768;
+	double Sample = ToneGeneratorGenerate(tg) * 32768;
 	if (Sample >= 0)
 	{
 		Sample = floor(Sample + 0.5);
@@ -180,102 +207,106 @@ signed short ToneGenerator::GenerateShort()
 	return (signed short)Sample;
 }
 
-void ToneGenerator::CalculateLookup()
+void ToneGeneratorCalculateLookup(ToneGenerator *tg)
 {
-	if (WaveType == LookupWaveType && SampleRate == LookupSampleRate && Frequency == LookupFrequency && Amplitude == LookupAmplitude && PhaseOffset == LookupPhaseOffset)
+	unsigned int i;
+	if (tg->WaveType == tg->LookupWaveType && tg->SampleRate == tg->LookupSampleRate && tg->Frequency == tg->LookupFrequency && tg->Amplitude == tg->LookupAmplitude && tg->PhaseOffset == tg->LookupPhaseOffset)
 	{
 		return;
 	}
-	if (LookupTable)
+	if (tg->LookupTable)
 	{
-		free(LookupTable);
-		LookupTable = NULL;
+		free(tg->LookupTable);
+		tg->LookupTable = NULL;
 	}
-	LookupWaveType = WaveType;
-	LookupSampleRate = SampleRate;
-	LookupFrequency = Frequency;
-	LookupAmplitude = Amplitude;
-	LookupPhaseOffset = PhaseOffset;
-	LookupSize = (unsigned int)floor((LookupSampleRate/LookupFrequency)+0.5);
-	if (LookupSize < 2)
+	tg->LookupWaveType = tg->WaveType;
+	tg->LookupSampleRate = tg->SampleRate;
+	tg->LookupFrequency = tg->Frequency;
+	tg->LookupAmplitude = tg->Amplitude;
+	tg->LookupPhaseOffset = tg->PhaseOffset;
+	tg->LookupSize = (unsigned int)floor((tg->LookupSampleRate/tg->LookupFrequency)+0.5);
+	if (tg->LookupSize < 2)
 	{
-		LookupSize = 2;
+		tg->LookupSize = 2;
 	}
-	LookupTable = (signed short*)malloc(LookupSize*2);
-	if (!LookupTable)
+	tg->LookupTable = (signed short*)malloc(tg->LookupSize*2);
+	if (!tg->LookupTable)
 	{
 		return;
 	}
-	for (unsigned int i = 0; i < LookupSize; i++)
+	for (i = 0; i < tg->LookupSize; i++)
 	{
-		LookupTable[i] = GenerateShort();
+		tg->LookupTable[i] = ToneGeneratorGenerateShort(tg);
 	}
-	LookupPosition = 0;
+	tg->LookupPosition = 0;
 }
 
-void ToneGenerator::ClearLookup()
+void ToneGeneratorClearLookup(ToneGenerator *tg)
 {
-	if (LookupTable)
+	if (tg->LookupTable)
 	{
-		free(LookupTable);
-		LookupTable = NULL;
+		free(tg->LookupTable);
+		tg->LookupTable = NULL;
 	}
-	LookupWaveType = 0;
-	LookupSampleRate = 0;
-	LookupFrequency = 0;
-	LookupAmplitude = 0;
-	LookupPhaseOffset = 0;
-	LookupSize = 0;
-	LookupPosition = 0;
+	tg->LookupWaveType = 0;
+	tg->LookupSampleRate = 0;
+	tg->LookupFrequency = 0;
+	tg->LookupAmplitude = 0;
+	tg->LookupPhaseOffset = 0;
+	tg->LookupSize = 0;
+	tg->LookupPosition = 0;
 }
 
-signed short ToneGenerator::GenerateLookup()
+signed short ToneGeneratorGenerateLookup(ToneGenerator *tg)
 {
-	if (!LookupTable)
+	signed short Sample;
+	if (!tg->LookupTable)
 	{
 		return 0;
 	}
-	signed short Sample = LookupTable[LookupPosition];
-	LookupPosition++;
-	if (LookupPosition >= LookupSize)
+	Sample = tg->LookupTable[tg->LookupPosition];
+	tg->LookupPosition++;
+	if (tg->LookupPosition >= tg->LookupSize)
 	{
-		LookupPosition -= LookupSize;
+		tg->LookupPosition -= tg->LookupSize;
 	}
 	return Sample;
 }
 
-unsigned int ToneGenerator::Millis2Samples(unsigned int Millis)
+unsigned int ToneGeneratorMillis2Samples(ToneGenerator *tg, unsigned int Millis)
 {
-	return (unsigned int)floor((Millis/1000.0)*SampleRate);
+	return (unsigned int)floor((Millis/1000.0)*tg->SampleRate);
 }
 
-void ToneGenerator::FillBuffer(signed short *buffer, unsigned int length, bool lookup)
+void ToneGeneratorFillBuffer(ToneGenerator *tg, signed short *buffer, unsigned int length, unsigned int lookup)
 {
+	unsigned int i;
 	if (!buffer)
 	{
 		return;
 	}
-	for (unsigned int i = 0; i < length; i++)
+	for (i = 0; i < length; i++)
 	{
-		if (lookup == true)
+		if (lookup)
 		{
-			buffer[i] = GenerateLookup();
+			buffer[i] = ToneGeneratorGenerateLookup(tg);
 		}
 		else
 		{
-			buffer[i] = GenerateShort();
+			buffer[i] = ToneGeneratorGenerateShort(tg);
 		}
 	}
 }
 
-void ToneGenerator::FillFloatBuffer(float *buffer, unsigned int length)
+void ToneGeneratorFillFloatBuffer(ToneGenerator *tg, float *buffer, unsigned int length)
 {
+	unsigned int i;
 	if (!buffer)
 	{
 		return;
 	}
-	for (unsigned int i = 0; i < length; i++)
+	for (i = 0; i < length; i++)
 	{
-		buffer[i] = (float)Generate();
+		buffer[i] = (float)ToneGeneratorGenerate(tg);
 	}
 }
