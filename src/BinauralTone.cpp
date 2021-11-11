@@ -231,12 +231,8 @@ void BinauralTone::processReplacing (float** inputs, float** outputs, VstInt32 s
 	float* in2 = inputs[1];
 	float* out1 = outputs[0];
 	float* out2 = outputs[1];
-	int i;
-	for (i=0; i<sampleFrames; i++)
-	{
-		out1[i] = (float)ToneGeneratorGenerate(&ToneL);
-		out2[i] = (float)ToneGeneratorGenerate(&ToneR);
-	}
+	ToneGeneratorFillFloatBuffer(&ToneL, out1, sampleFrames);
+	ToneGeneratorFillFloatBuffer(&ToneR, out2, sampleFrames);
 }
 
 void BinauralTone::processDoubleReplacing (double** inputs, double** outputs, VstInt32 sampleFrames)
@@ -245,10 +241,6 @@ void BinauralTone::processDoubleReplacing (double** inputs, double** outputs, Vs
 	double* in2 = inputs[1];
 	double* out1 = outputs[0];
 	double* out2 = outputs[1];
-	int i;
-	for (i=0; i<sampleFrames; i++)
-	{
-		out1[i] = ToneGeneratorGenerate(&ToneL);
-		out2[i] = ToneGeneratorGenerate(&ToneR);
-	}
+	ToneGeneratorFillDoubleBuffer(&ToneL, out1, sampleFrames);
+	ToneGeneratorFillDoubleBuffer(&ToneR, out2, sampleFrames);
 }
