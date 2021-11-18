@@ -27,8 +27,14 @@ void BinauralTone::setParameter (VstInt32 index, float value)
 	case kPhaseOffsL:
 		ToneGeneratorSetPhaseOffset(&ToneL, value*360);
 		break;
+	case kPulseWidthL:
+		ToneGeneratorSetPulseWidth(&ToneL, value);
+		break;
 	case kWaveL:
 		ToneGeneratorSetWaveType(&ToneL, value*(WaveTypes-1));
+		break;
+	case kDigitL:
+		ToneGeneratorSetDigit(&ToneL, value*(DTMFTones-1));
 		break;
 	case kFreqR:
 		ToneGeneratorSetFrequency(&ToneR, value*1000);
@@ -39,8 +45,14 @@ void BinauralTone::setParameter (VstInt32 index, float value)
 	case kPhaseOffsR:
 		ToneGeneratorSetPhaseOffset(&ToneR, value*360);
 		break;
+	case kPulseWidthR:
+		ToneGeneratorSetPulseWidth(&ToneR, value);
+		break;
 	case kWaveR:
 		ToneGeneratorSetWaveType(&ToneR, value*(WaveTypes-1));
+		break;
+	case kDigitR:
+		ToneGeneratorSetDigit(&ToneR, value*(DTMFTones-1));
 		break;
 	}
 }
@@ -59,8 +71,14 @@ float BinauralTone::getParameter (VstInt32 index)
 	case kPhaseOffsL:
 		value = ToneGeneratorGetPhaseOffset(&ToneL)/360;
 		break;
+	case kPulseWidthL:
+		value = ToneGeneratorGetPulseWidth(&ToneL);
+		break;
 	case kWaveL:
 		value = (float)ToneGeneratorGetWaveType(&ToneL)/(WaveTypes-1);
+		break;
+	case kDigitL:
+		value = (float)ToneGeneratorGetDigit(&ToneL)/(DTMFTones-1);
 		break;
 	case kFreqR:
 		value = ToneGeneratorGetFrequency(&ToneR)/1000;
@@ -71,8 +89,14 @@ float BinauralTone::getParameter (VstInt32 index)
 	case kPhaseOffsR:
 		value = ToneGeneratorGetPhaseOffset(&ToneR)/360;
 		break;
+	case kPulseWidthR:
+		value = ToneGeneratorGetPulseWidth(&ToneR);
+		break;
 	case kWaveR:
 		value = (float)ToneGeneratorGetWaveType(&ToneR)/(WaveTypes-1);
+		break;
+	case kDigitR:
+		value = (float)ToneGeneratorGetDigit(&ToneR)/(DTMFTones-1);
 		break;
 	}
 	return value;
@@ -91,8 +115,14 @@ void BinauralTone::getParameterDisplay (VstInt32 index, char* text)
 	case kPhaseOffsL:
 		float2string (ToneGeneratorGetPhaseOffset(&ToneL), text, kVstMaxParamStrLen);
 		break;
+	case kPulseWidthL:
+		float2string (ToneGeneratorGetPulseWidth(&ToneL), text, kVstMaxParamStrLen);
+		break;
 	case kWaveL:
 		strcpy (text, ToneGeneratorGetCurrentWaveName(&ToneL));
+		break;
+	case kDigitL:
+		strcpy (text, ToneGeneratorGetCurrentDigitName(&ToneL));
 		break;
 	case kFreqR:
 		float2string (ToneGeneratorGetFrequency(&ToneR), text, kVstMaxParamStrLen);
@@ -103,8 +133,14 @@ void BinauralTone::getParameterDisplay (VstInt32 index, char* text)
 	case kPhaseOffsR:
 		float2string (ToneGeneratorGetPhaseOffset(&ToneR), text, kVstMaxParamStrLen);
 		break;
+	case kPulseWidthR:
+		float2string (ToneGeneratorGetPulseWidth(&ToneR), text, kVstMaxParamStrLen);
+		break;
 	case kWaveR:
 		strcpy (text, ToneGeneratorGetCurrentWaveName(&ToneR));
+		break;
+	case kDigitR:
+		strcpy (text, ToneGeneratorGetCurrentDigitName(&ToneR));
 		break;
 	}
 }
@@ -122,6 +158,9 @@ void BinauralTone::getParameterLabel (VstInt32 index, char* label)
 	case kPhaseOffsL:
 		strcpy (label, "Degrees");
 		break;
+	case kPulseWidthL:
+		strcpy (label, "F");
+		break;
 	case kFreqR:
 		strcpy (label, "hZ");
 		break;
@@ -130,6 +169,9 @@ void BinauralTone::getParameterLabel (VstInt32 index, char* label)
 		break;
 	case kPhaseOffsR:
 		strcpy (label, "Degrees");
+		break;
+	case kPulseWidthR:
+		strcpy (label, "F");
 		break;
 	}
 }
@@ -147,8 +189,14 @@ void BinauralTone::getParameterName (VstInt32 index, char* text)
 	case kPhaseOffsL:
 		strcpy (text, "PhaseOffsL");
 		break;
+	case kPulseWidthL:
+		strcpy (text, "PulseWidthL");
+		break;
 	case kWaveL:
 		strcpy (text, "WaveL");
+		break;
+	case kDigitL:
+		strcpy (text, "DigitL");
 		break;
 	case kFreqR:
 		strcpy (text, "FreqR");
@@ -159,8 +207,14 @@ void BinauralTone::getParameterName (VstInt32 index, char* text)
 	case kPhaseOffsR:
 		strcpy (text, "PhaseOffsR");
 		break;
+	case kPulseWidthR:
+		strcpy (text, "PulseWidthR");
+		break;
 	case kWaveR:
 		strcpy (text, "WaveR");
+		break;
+	case kDigitR:
+		strcpy (text, "DigitR");
 		break;
 	}
 }
