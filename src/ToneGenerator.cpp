@@ -33,6 +33,15 @@ void ToneGeneratorInit(ToneGenerator *tg)
 	ToneGeneratorResetAngle(tg);
 }
 
+void ToneGeneratorClear(ToneGenerator *tg)
+{
+	if (!tg)
+	{
+		return;
+	}
+	memset(tg, 0, sizeof(ToneGenerator));
+}
+
 void ToneGeneratorSetWaveType(ToneGenerator *tg, unsigned int value)
 {
 	if (!tg)
@@ -317,6 +326,7 @@ void ToneGeneratorResetAngle(ToneGenerator *tg)
 	tg->Angle = 0;
 	tg->DTMFAngle1 = 0;
 	tg->DTMFAngle2 = 0;
+	tg->Impulse = 1;
 }
 
 const char *ToneGeneratorGetCurrentWaveName(ToneGenerator *tg)
@@ -337,6 +347,8 @@ const char *ToneGeneratorGetCurrentWaveName(ToneGenerator *tg)
 		return "Triangle";
 	case WaveTypeSawtooth:
 		return "Sawtooth";
+	case WaveTypeImpulse:
+		return "Impulse";
 	case WaveTypeNoise:
 		return "Noise";
 	case WaveTypeDTMF:
@@ -431,6 +443,13 @@ double ToneGeneratorGenerate(ToneGenerator *tg)
 	case WaveTypeSawtooth:
 		Waveform = tg->Angle / pi - 1.0;
 		break;
+	case WaveTypeImpulse:
+		if (tg->Impulse)
+		{
+			Waveform = 1;
+			tg->Impulse = 0;
+		}
+		break;
 	case WaveTypeNoise:
 		Waveform = rand() / (double)RAND_MAX;
 		break;
@@ -452,12 +471,13 @@ double ToneGeneratorGenerate(ToneGenerator *tg)
 		}
 		break;
 	}
-	if (tg->WaveType >= WaveTypeSine && tg->WaveType <= WaveTypeSawtooth)
+	if (tg->WaveType >= WaveTypeSine && tg->WaveType <= WaveTypeImpulse)
 	{
 		tg->Angle += tg->Step;
 		if (tg->Angle >= twopi)
 		{
 			tg->Angle -= twopi;
+			tg->Impulse = 1;
 		}
 	}
 	return tg->Amplitude * Waveform;
